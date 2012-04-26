@@ -1,0 +1,225 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"user",
+				"user_function"
+			],
+			[
+				"da",
+				"database"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 62.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"pak	",
+				"Package Control: Discover Packages"
+			],
+			[
+				"package",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 512.0
+	},
+	"console":
+	{
+		"height": 202.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/F/Framework/includes/config.php",
+		"/F/Projects/WebCoisas/SmartGateway/Rest.php",
+		"/F/Projects/Chroma/Intranet/includes/config.php",
+		"/F/Framework/index.php",
+		"/F/envia.php",
+		"/F/index2.php",
+		"/C/Users/Moiteiro/Downloads/routes.rb",
+		"/D/wamp/www/Sandbox/email.php",
+		"/F/Framework/controllers/session.php",
+		"/F/Framework/models/session.php",
+		"/F/Framework/models/history.php",
+		"/F/Framework/libs/security.php",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/gateways.php",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/db/db.php",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/db/gravar_log.php",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/index.php",
+		"/F/Framework/controllers/example.php",
+		"/C/Wamp/bin/apache/Apache2.2.21/conf/extra/httpd-vhosts.conf",
+		"/C/Windows/System32/drivers/etc/hosts",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/1min.php",
+		"/C/Wamp/bin/php/php5.3.10/php.ini",
+		"/F/Projects/Chroma/Intranet/views/training/index.php",
+		"/F/Projects/Escola de Musica - UFBA/Sistema Web/includes/config.php",
+		"/C/Users/Moiteiro/Desktop/WebCoisas/SmartGateway/Rest.php",
+		"/F/Projects/Chroma/Intranet/views/suppliers/_form.php",
+		"/F/Projects/Chroma/Intranet/views/sup_evaluations/_form.php",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/F/Projects/Chroma/Intranet/views/users/_form.php",
+		"/F/Projects/Chroma/Intranet/views/training/new.php",
+		"/F/Projects/Chroma/Intranet/views/training/edit.php",
+		"/F/Projects/Chroma/Intranet/index.php",
+		"/F/Projects/Chroma/Intranet/views/layouts/application.php",
+		"/F/Projects/Chroma/Intranet/controllers/speciality_papers.php",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Moiteiro/Desktop/Vector.html",
+		"/C/Users/Moiteiro/Desktop/teste.html",
+		"/C/Users/Moiteiro/Desktop/Untitled-1.html",
+		"/C/Users/Moiteiro/Desktop/asdf",
+		"/C/Users/Moiteiro/Desktop/function init(){var canvas=document.getElementById",
+		"/C/Users/Moiteiro/Downloads/Apps/ADOBE.CREATIVE.SUITE.5.5.MASTER.COLLECTION.ESD-ISO/nfo.nfo",
+		"/D/wamp/www/index.php",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/User/Distraction Free.sublime-settings",
+		"/C/Users/Moiteiro/AppData/Roaming/Sublime Text 2/Packages/User/JSON.sublime-settings",
+		"/C/Users/Moiteiro/.ssh/id_rsa.pub",
+		"/C/Users/Moiteiro/Development/my_project/index.html"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"anymore",
+			"pear",
+			"knowledge",
+			"req_training",
+			"epx",
+			"edutation",
+			"column",
+			"columns",
+			"collu",
+			"col",
+			"technologies",
+			"line",
+			"height"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 239.0,
+	"status_bar_visible": true
+}

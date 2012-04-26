@@ -1,0 +1,1 @@
+Ponha dentro dessa pasta todas as bibliotecas que serão utlizados pelo aplicativo que está sendo desenvolvido.
