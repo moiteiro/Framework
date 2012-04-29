@@ -58,12 +58,10 @@ class DatabaseObject {
 	/**
 	* Funcao para paginar o resultado.
 	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento.
-	* Esse retorno e um array com duas posicoes. $array['result'] contem a listagem do resultado da query e $array['total'] contem o total de resultados 
 	* @access public
 	* @static
-	* @param integer $start
-	* @param integer $length
-	* @return array object
+	* @param int $id
+	* @return object
 	*/
 	public static function find_all_in_range($start, $length){
 		
@@ -78,8 +76,95 @@ class DatabaseObject {
 		$result_array['total'] = $database->found_rows();
 
 		return $result_array;
+		
 	}
-	
+
+	/**
+	* Funcao para paginar onde o resultado pode ser ordenado por uma coluna.
+	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento e ordenado pelo nome da coluna.
+	* Esse retorno e um array com duas posicoes. $array['result'] contem a listagem do resultado da query e $array['total'] contem o total de resultados 
+	* @access public
+	* @static
+	* @param integer $start
+	* @param integer $length
+	* @param string $column_name
+	* @return array object
+	*/
+	public static function find_all_in_range_order_by($start, $length, $column_name){
+
+		global $database;
+
+		$column_name = self::organize_order_by_clause($column_name); // o resultado ja e com o valores escapados.
+
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." ORDER BY $column_name LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length)
+						);
+
+		$result_array['result'] = self::find_by_sql($query);
+		$result_array['total']  = $database->found_rows();
+
+		return $result_array;
+	}
+
+
+	/**
+	* Funcao para paginar onde o resultado eh enclausurado por WHERE.
+	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento e onde satifizer o WHERE.
+	* Esse retorno e um array com duas posicoes. $array['result'] contem a listagem do resultado da query e $array['total'] contem o total de resultados 
+	* @access public
+	* @static
+	* @param integer $start
+	* @param integer $length
+	* @param string $where
+	* @return array object
+	*/
+	public static function find_all_in_range_where($start, $length, $where){
+
+		global $database;
+
+		$where = self::organize_where_clause($where);// o resultado ja eh com os valores escapados.
+
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." WHERE $where LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length)
+						);
+
+		$result_array['result'] = self::find_by_sql($query);
+		$result_array['total']  = $database->found_rows();
+
+		return $result_array;
+	}
+
+	/**
+	* Funcao para paginar onde o resultado eh enclausurado por WHERE e ordenado por ORDER BY.
+	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento e onde satifizer o WHERE.
+	* Esse retorno e um array com duas posicoes. $array['result'] contem a listagem do resultado da query e $array['total'] contem o total de resultados 
+	* @access public
+	* @static
+	* @param integer $start
+	* @param integer $length
+	* @param string $where
+	* @return array object
+	*/
+	public static function find_all_in_range_where_order_by($start, $length, $where, $column_name){
+
+		global $database;
+
+		$where       = self::organize_where_clause($where); // o resultado ja esta escapado.
+		$column_name = self::organize_where_clause($column_name); // o resultado ja esta escapado.
+
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." WHERE $where ORDER BY $column_name LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length)
+						);
+
+		$result_array['result'] = self::find_by_sql($query);
+		$result_array['total']  = $database->found_rows();
+
+		return $result_array;
+	}
+
 	/**
 	* Função para executar qualquer SQL de seleção.
 	* Retorna um array de objects ou um object com todas as propriedades declaradas na classe já setadas.
@@ -115,9 +200,9 @@ class DatabaseObject {
 	}
 
 	/**
-	* Seta valores nos atributos da classe
-	* Recebe um array com valores que serão colocados nos atributos.
-	* Os atributos só receberam valores se eles estiverem declarados na classe e no array {@link $db_fields}
+	* Insere os valores do array $params nas atributos da classe.
+	* As chaves passadas no array $params devem conter o mesmo nome que os atributos.
+	* Chave que nao possua atributo correspondente na sera associada a nada, e dessa forma, ignorada.
 	* @access public
 	* @param array $params
 	* @return void
@@ -266,11 +351,10 @@ class DatabaseObject {
 	}
 	
 	/**
-	 * Verifica se nao ha a coluna possue um valor que seja unico.
-	 * Caso existam valores semelhantes, a funcao retorna false.
+	 * Verifica se a coluna de uma tabela possue um valor unico.
 	 * @access public
-	 * @param string $column nome da coluna da tabela.
-	 * @param string $value string contendo o valor a ser verificado.
+	 * @param string $column
+	 * @param string $value
 	 * @return bool
 	 */
 	public function is_unique($column, $value){
@@ -328,8 +412,8 @@ class DatabaseObject {
 		
 		return $obj_content;
 	}
-
-
+	
+	
 	/**
 	* Seta os valores passados através de uma array nas propriedades declaradas na classe
 	* @access private
@@ -363,5 +447,77 @@ class DatabaseObject {
 		return array_key_exists($attribute, $object_vars);
 		
 	}
+
+	/**
+	 * Organiza o comando ORDER BY apartir de um array em uma string.
+	 * O resultado e uma string escapada.
+	 * @access private
+	 * @param array|string $column_name
+	 * @return string
+	 */
+	private function organize_order_by_clause($column_name){
+
+		global $database;
+
+		$temp = array();
+		if(is_array($column_name)){
+			while($value = current($column_name)){
+
+				$key = key($column_name); // pegando a chave do array.
+
+				if(is_int($key)){
+					$temp[] = sprintf(" %s ASC ", $database->escape_value($value));
+
+				} else {
+					$temp[] = sprintf(	" %s %s ", 
+										$database->escape_value($key),
+										$database->escape_value($value)
+									);
+				}
+
+				$value = next($column_name); // percorrendo o array.
+			}
+
+			$column_name = implode(", ", $temp);
+
+		} else { // Caso o valor passado no seja um array.
+			$column_name = sprintf(" %s ", $database->escape_value($column_name));
+		}
+
+		return $column_name;
+	}
 	
+	/**
+	 * Organiza o senteca WHERE a partir de um array em uma string
+	 * O operador utilizado na comparacao sera o "=".
+	 * Cada $key sera avaliada com o seu respectivo $value.
+	 * O resultado eh uma string escapada.
+	 * @access private
+	 * @param array|string $values
+	 * @return string
+	 */
+	private function organize_where_clause($values){
+
+		global $database;
+
+		$temp = array();
+		if(empty($values) || !is_array($values)){
+			throw new Exception("The arguments must be given as an associative array", 1);
+		} else {
+			foreach($values as $key => $value){
+				if(is_int($key))
+					throw new Exception("A column name cannot be an integer", 1);
+				else
+				$temp[] = sprintf(	"%s = '%s'", 
+								  	$database->escape_value($key),
+								  	$database->escape_value($value)
+								 );
+			}
+
+			$values = implode(", ",$temp);
+
+		}
+
+		return $values;
+	}
 }
