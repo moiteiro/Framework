@@ -56,6 +56,29 @@ class DatabaseObject {
 	}
 	
 	/**
+	* Funcao para paginar o resultado.
+	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento.
+	* @access public
+	* @static
+	* @param int $id
+	* @return object
+	*/
+	public static function find_all_in_range($start, $length){
+		
+		global $database;
+
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." WHERE LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length));
+
+		$result_array['result'] = self::find_by_sql($query);
+
+		$result_array['total'] = $database->found_rows();
+
+		return $result_array;
+	}
+	
+	/**
 	* Função para executar qualquer SQL de seleção.
 	* Retorna um array de objects ou um object com todas as propriedades declaradas na classe já setadas.
 	* @access public
@@ -73,6 +96,22 @@ class DatabaseObject {
 		return $object_array;
 	}
 	
+	/**
+	* Retorna a quantidade de dados cadastrados em uma tabela.
+	* A contagem eh feita apartir do id dos dados inseridos.
+	* @access public
+	* @return integer
+	*/
+	public function get_total_amount(){
+		global $database;
+
+		$query = "SELECT COUNT(id) as total FROM ".static::$table_name;
+		$result_set = $database->query($query);
+		$result_array  = $database->result_to_array($result_set);
+		return !empty($result_array) ? array_shift(array_shift($result_array)) : 0;
+
+	}
+
 	/**
 	* Seta valores nos atributos da classe
 	* Recebe um array com valores que serão colocados nos atributos.
