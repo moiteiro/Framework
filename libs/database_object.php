@@ -58,16 +58,18 @@ class DatabaseObject {
 	/**
 	* Funcao para paginar o resultado.
 	* Ela ira retornar os resultados que estiverem dentro do range passado como paramento.
+	* Esse retorno e um array com duas posicoes. $array['result'] contem a listagem do resultado da query e $array['total'] contem o total de resultados 
 	* @access public
 	* @static
-	* @param int $id
-	* @return object
+	* @param integer $start
+	* @param integer $length
+	* @return array object
 	*/
 	public static function find_all_in_range($start, $length){
 		
 		global $database;
 
-		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." WHERE LIMIT %s, %s",
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." LIMIT %s, %s",
 							$database->escape_value($start), 
 							$database->escape_value($length));
 
