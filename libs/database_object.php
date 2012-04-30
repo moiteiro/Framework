@@ -152,7 +152,7 @@ class DatabaseObject {
 		global $database;
 
 		$where       = self::organize_where_clause($where); // o resultado ja esta escapado.
-		$column_name = self::organize_where_clause($column_name); // o resultado ja esta escapado.
+		$column_name = self::organize_order_by_clause($column_name); // o resultado ja esta escapado.
 
 		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." WHERE $where ORDER BY $column_name LIMIT %s, %s",
 							$database->escape_value($start), 
