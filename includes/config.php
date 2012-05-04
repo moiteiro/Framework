@@ -10,13 +10,13 @@ set_error_handler('dflt_error_handler');
 
 $local 		= $_SERVER['SERVER_ADDR'] == "127.0.0.1" ? true : false ;
 
-//									-------LOCAL-------	: -------SERVER-------		
-$host		= $local ? "localhost" 						: "";
+//						-------LOCAL-------	: -------SERVER-------		
+$host		= $local ? "localhost"						: "";
 $db			= $local ? "test"							: "";
-$user 		= $local ? "root"							: "";
-$pass 		= $local ? ""								: "";
-$website 	= $local ? "http://framework"				: "";
-
+$user		= $local ? "root"							: "";
+$pass		= $local ? ""								: "";
+$website	= $local ? "http://framework"				: "";
+	
 	
 // Define uma camada de seguraça
 // Previne o acesso direto aos arquivos no view

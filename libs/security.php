@@ -39,22 +39,3 @@ class Security {
 
 
 $security = new Security();
-$security->safe_form();
-
-if($security->is_safe_form()){
-	echo "it's safe, you can record these datas. <br />";
-}
-$security->remove_safe_form();
-if(!$security->is_safe_form()){
-	echo "it's not safe anymore. What you trying to do?";
-}
-
-echo "<hr />";
-
-echo md5 ('moiteiro');
-
-echo "<hr />";
-
-echo $security->encrypt_256("moiteiro");
-
-?>
