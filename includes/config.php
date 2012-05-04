@@ -1,5 +1,10 @@
 <?php
 
+require('/libs/core_functions.php');
+// Definindo funcoes customizadas para serem exibidas caso haja uma Exception, Notice ou Warning.
+set_exception_handler('dflt_exception_handler');
+set_error_handler('dflt_error_handler');
+
 $routes = array(
 				
 				//home
@@ -87,9 +92,5 @@ define('INT'		,'integer');
 define('FLOAT'		,'float');
 define('CPF'		,'cpf');
 define('EMAIL'		,'email');
-
-
-// Definindo a funcao default para ser acionada cada vez que uma Exception do sistema for gerada
-set_exception_handler('dflt_handler');
 
 ?>
