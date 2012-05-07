@@ -13,7 +13,7 @@
 	* @param string $message
 	* @return void
 	*/
-	function flash_notice(string $message){
+	function flash_notice($message){
 		
 		if(isset($message))
 			$_SESSION['flash']['notice'] = $message;
@@ -25,7 +25,7 @@
 	* @param string $message
 	* @return void
 	*/
-	function flash_warning(string $message){
+	function flash_warning($message){
 		
 		if(isset($message))
 			$_SESSION['flash']['warning'] = $message;
@@ -37,7 +37,7 @@
 	* @param string $message
 	* @return void
 	*/
-	function flash_tip(string $message){
+	function flash_tip($message){
 		
 		if(isset($message))
 			$_SESSION['flash']['tip'] = $message;
