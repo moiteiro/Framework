@@ -121,26 +121,6 @@
 		$date = array_reverse($date);
 		return implode('/',$date);	
 	}
-
-	/**
-	* Funcao que lida com todas as exceptions
-	* Toda vez que uma exceção for lançanda no sistema, essa função ira ser acionada
-	* @param Object $exc
-	* @return void
-	*/
-	function dflt_handler(Exception $exc){
-		print "Exception: \n";
-		$code = $exc->getCode();
-		
-		if(!empty($code)){
-			printf("Error code:\n", $code);
-		}
-		
-		print $exc->getMessage(). "\n";
-		print "File: " . $exc->getFile()."\n";
-		print "Line: " . $exc->getLine()."\n";
-		exit(-1);
-	}
 	
 	/**
 	* Corta o texto e retorna  o conteúdo de acordo com o tamanho explicitado.
