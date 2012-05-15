@@ -1,14 +1,13 @@
 <?php
-// remover ao implementar
-session_start();
 
 class Security {
 	
 	// code for SHA-512
 	private $salt_SHA_512 = '$6$rounds=5000$<!--Bruno Moiteiro-->$';
+	// code for SHA-256
 	private $salt_SHA_256 = '$5$rounds=5000$<!--Bruno Moiteiro-->$';
 	
-	//
+	
 	public function safe_form(){
 		//seta essa variavel para 
 		$_SESSION['security']['form'] = true;
