@@ -3,8 +3,8 @@
 // prevent the direct access
 defined('_PREVENT-DIRECT-ACCESS') or die ("Access restrict");
 
-switch($route['access']){
-	case "login":
+switch($route->view){
+	case "create":
 		$session->login($params);
 		
 		if($session->is_logged());
@@ -13,7 +13,7 @@ switch($route['access']){
 		
 		break;
 	
-	case "logout":
+	case "delete":
 	
 		$history->create($_SESSION['permission_level'],$_SESSION['user_id'],$_SESSION['username'],6,6,0);
 		$session->logout();

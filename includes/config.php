@@ -1,11 +1,5 @@
 <?php
 
-require('/libs/core_functions.php');
-// Definindo funcoes customizadas para serem exibidas caso haja uma Exception, Notice ou Warning.
-set_exception_handler('dflt_exception_handler');
-set_error_handler('dflt_error_handler');
-
-
 // verificando se o servidor eh local
 
 $local 		= $_SERVER['SERVER_ADDR'] == "127.0.0.1" ? true : false ;
@@ -24,7 +18,7 @@ define('_PREVENT-DIRECT-ACCESS',1);
 
 
 // Define directory structure
-define('DS', DIRECTORY_SEPARATOR);
+define('DS', '/');
 
 
 // Define host

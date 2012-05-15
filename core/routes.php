@@ -9,17 +9,31 @@
 * @version 1.0
 * @copyright Copyright (c) 2012, Bruno Moiteiro
 */
-class Routes {
+class Route {
 
 	/**
-	 * Contem as rotas declaradas no sistema.
+	 * Armazena o valor do controller.
+	 * @access public
+	 * @var string
+	 */
+	public $controller;
+
+	/**
+	 * Armazena o valor do view.
+	 * @access public
+	 * @var string
+	 */
+	public $view;
+
+	/**
+	 * Armazena as rotas criadas pelo sistema.
 	 * @access private
 	 * @var array
 	 */
 	private $_routes = array();
 
 	/**
-	 * Armazena as rotas criadas pelo sistema.
+	 * Contem as rotas declaradas no sistema.
 	 * @access private
 	 * @var array
 	 */
@@ -39,10 +53,20 @@ class Routes {
 	 */
 	private $_default_route_pattern = array("url"=>"/^\/__controller__\/__view__\/?$/" ,"controller"=>"__controller__","view"=>"__view__");
 
+	/**
+	 * Rotas iniciais para o funcionamento do sistema.
+	 * Essas rotas são definidas aqui porque nao seguem o padrão do restante do sistema.
+	 * @access private
+	 * @var array
+	 */
+	private $_predefined_routes;
+
 	public function __construct($routes){
-		$this->routes_container = $routes;
+		$this->_routes_container = $routes;
 		$this->_routes_pattern = self::get_routes_pattern();
+		$this->_predefined_routes = self::get_predefined_routes();
 		$this->create_routes_list();
+		$this->insert_predefined_routes();
 	}
 
 
@@ -53,7 +77,7 @@ class Routes {
 	 */
 	private function create_routes_list(){
 
-		foreach($this->routes_container as $key => $value){
+		foreach($this->_routes_container as $key => $value){
 
 			// essa variavel serve para que o valor original $_routes_pattern nao seja alterado
 			$routes_pattern = $this->_routes_pattern;
@@ -63,8 +87,8 @@ class Routes {
 				$controller = $value;
 			} else {
 				$controller = $key;
-				if(isset($value['except'])){
-					self::remove_routes_from_list($value['except'], $routes_pattern);
+				if(isset($value['remove'])){
+					self::remove_routes_from_list($value['remove'], $routes_pattern);
 				} 
 				if(isset($value['add'])){
 					self::add_routes_in_the_list($value['add'], $routes_pattern);
@@ -88,10 +112,12 @@ class Routes {
 	 * @return bool
 	 */
 	public function check_url($url, &$matches){
-		foreach($this->_routes as $route){
-			if(preg_match($route['url'],$url,$matches))
+		foreach($this->_routes as $route)
+			if(preg_match($route['url'],$url,$matches)){
+				$this->controller = $route['controller'];
+				$this->view       = $route['view'];
 				return true;
-		}
+			}
 		return false;
 	}
 
@@ -154,15 +180,15 @@ class Routes {
 	 * @param array $routes
 	 * @return void
 	 */
-	private function remove_routes_from_list($exceptions, &$routes){
+	private function remove_routes_from_list($remove, &$routes){
 
-		if(!is_array($exceptions) && isset($routes[$exceptions])){
-			unset($routes[$exceptions]);
-		} else if(is_array($exceptions)) {
+		if(!is_array($remove) && isset($routes[$remove])){
+			unset($routes[$remove]);
+		} else if(is_array($remove)) {
 
-			foreach ($exceptions as $except) {
-				if(array_key_exists($except, $routes))
-					unset($routes[$except]);
+			foreach ($remove as $remove_route) {
+				if(array_key_exists($remove_route, $routes))
+					unset($routes[$remove_route]);
 			}
 
 		}
@@ -190,6 +216,26 @@ class Routes {
 			}
 		}
 	}
-}
 
-$routes = new Routes($temp);
+	/**
+	 * Insere todas as rotas predefinidas na variavel @link{$_predifined_routes} para que seja tratada pelo sistema.
+	 * @access private
+	 * @return array
+	 */
+	private function get_predefined_routes(){
+		$predefined = array(
+							array("url"=>'/^\/?$/' ,"controller"=>"application","view"=>"index")
+						);
+
+		return $predefined;
+	}
+
+	/**
+	 * Insere as rotas predifinidas do sistema na listagem das rotas.
+	 * @access private
+	 * @return void
+	 */
+	private function insert_predefined_routes(){
+		$this->_routes = array_merge($this->_routes, $this->_predefined_routes);
+	}
+}

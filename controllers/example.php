@@ -12,7 +12,7 @@ $Class = "Default";
 
 
 // esse código será rodado quando for chamado por ajax!
-if(!isset($route['view'])){
+if(!isset($route->view)){
 	
 	$route['view'] = $_GET['view'];
 	require_once("../includes/config.php");
@@ -23,7 +23,7 @@ if(!isset($route['view'])){
 // inclua todas as classes necessárias
 #require_once(MODEL_PATH.DS."file.php");
 
-switch($route['view']){
+switch($route->view){
 	
 	case "index":
 	case "list":
@@ -97,7 +97,7 @@ switch($route['view']){
 			flash_tip("DEBUG: <br />Atencao, esse error foi gerado na validacao dos dados <br /> Retire essa função e implemente validacao via JS");
 			
 			// redirecionado para a pagina de cadastro
-			redirect_to($route['controller'].DS."new");
+			redirect_to($route->controller.DS."new");
 		}
 		
 		
@@ -131,7 +131,7 @@ switch($route['view']){
 							Entre em contato com o Suporte");
 		}
 		
-		redirect_to($route['controller']);
+		redirect_to($route->controller);
 		
 	break;
 	
@@ -206,7 +206,7 @@ switch($route['view']){
 			flash_tip("DEBUG: <br />Atencao, esse error foi gerado na validacao dos dados <br /> Retire essa função e implemente validacao via JS");
 			
 			// redirecionado para a pagina de cadastro
-			redirect_to($route['controller'].DS.$params['id'].DS."edit");
+			redirect_to($route->controller.DS.$params['id'].DS."edit");
 		}
 		
 		
@@ -256,7 +256,7 @@ switch($route['view']){
 							Entre em contato com o Suporte");
 		}
 		
-		redirect_to($route['controller']);
+		redirect_to($route->controller);
 		
 	break;
 	
@@ -272,7 +272,7 @@ switch($route['view']){
 							Entre em contato com o Suporte");	
 		}
 		
-		redirect_to($route['controller']);
+		redirect_to($route->controller);
 		
 	break;
 	
