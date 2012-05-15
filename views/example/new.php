@@ -1,4 +1,4 @@
-<form action="<?php echo WEBSITE.DS.'ventures'.DS.'create' ;?>" 
+<form action="<?php echo WEBSITE.DS.$route->controller.DS.'create' ;?>" 
     id="form-create-user" 
     class="block-content form" 
     enctype="multipart/form-data" 
