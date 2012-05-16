@@ -5,6 +5,8 @@
 	* @param string #class_name
 	*/
 	function __autoload($class_name) {
+		$class_name = preg_replace( '/([a-z0-9])([A-Z])/', "$1_$2", $class_name );
+		$class_name = strtolower($class_name);
 		require_once MODEL_PATH.DS.$class_name.'.php';
 	}
 	/**
