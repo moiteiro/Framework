@@ -488,7 +488,7 @@ class DatabaseObject {
 	}
 	
 	/**
-	 * Organiza o senteca WHERE a partir de um array em uma string
+	 * Organiza a sentença WHERE a partir de um array em uma string
 	 * O operador utilizado na comparacao sera o "=".
 	 * Cada $key sera avaliada com o seu respectivo $value.
 	 * O resultado eh uma string escapada.
@@ -514,7 +514,7 @@ class DatabaseObject {
 								 );
 			}
 
-			$values = implode(", ",$temp);
+			$values = implode(" AND ",$temp);
 
 		}
 
