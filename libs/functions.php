@@ -142,7 +142,7 @@
 			
 			// significa que não ha espaço até o final da string.
 			// Ela terá que ser incluida totalmente.
-			if($first_space != false){
+			if($first_space !== false){
 				$text = substr($text,0 ,$size+$first_space);	
 				$text .= " ...";
 			}
