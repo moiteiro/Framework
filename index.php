@@ -16,8 +16,8 @@ if($route->check_url($url,$matches)){
 	
 	$match_found = true;
 		
-	if (file_exists(VIEW_PATH.DS.'layouts'.DS.$route->view.'.php')){
-		include(VIEW_PATH.DS.'layouts'.DS.$route->view.'.php');
+	if (file_exists(VIEW_PATH.DS.'layouts'.DS.$route->controller.'.php')){
+		include(VIEW_PATH.DS.'layouts'.DS.$route->controller.'.php');
 	} else {
 		include(VIEW_PATH.DS.'layouts'.DS.'application.php');
 	}
