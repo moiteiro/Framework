@@ -1,12 +1,15 @@
 <?php
 
+namespace System;
+
+
 /** 
 * Class que manipula as rotas do sistema. As rotas devem ser definidas no arquivo /config/routes.php
 * As rotas sao checadas de acordo com a url do navegador.
 * A class ainda provê a funcionalidade de exporta as rotas para XML, assim como tratá-las diretamente.
 * 
 * @author Bruno Moiteiro <bruno.moiteiro@gmail.com>
-* @version 1.0
+* @version 1.1
 * @copyright Copyright (c) 2012, Bruno Moiteiro
 */
 class Route {
@@ -70,6 +73,8 @@ class Route {
 
 		$this->create_routes_list();
 		$this->insert_predefined_routes();
+
+		echo "<pre>".print_r($this->_routes,1)."</pre>";
 	}
 
 
@@ -329,18 +334,15 @@ class Route {
 				$pattern_sample = str_replace( "\word_type", $default_type_sample, $pattern_sample );
 
 
-				// transformando a palavra caso ela seja um "id".
-				if( $word == "id" ) {
-
-					$previous_word = substr($route, 0, $start);
-					
-					$before_previous_word = strrpos($previous_word, "/");
-					if($before_previous_word !== false){
-						$previous_word = substr($previous_word, $before_previous_word+1);
-					}
-
-					$word = $previous_word."_id";
+				// colocando um prefixo na variavel usando a palavra anterior.
+				$previous_word = substr($route, 0, $start);
+				
+				$before_previous_word = strrpos($previous_word, "/");
+				if($before_previous_word !== false){
+					$previous_word = substr($previous_word, $before_previous_word+1);
 				}
+
+				$word = $previous_word."_id";
 				
 				$word = str_replace( "word", $word, $pattern_sample );
 
@@ -348,7 +350,6 @@ class Route {
 				$route = preg_replace( "/$word_container/", $word, $route, 1 );
 			}
 		}
-
 		return $routes;
 	}
 }

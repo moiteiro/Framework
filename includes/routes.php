@@ -37,8 +37,16 @@ $routes = array(
  * example:id/foo/bar
  * example:id/foo:id/bar
  * 
- * 
- * $routes = array('users','groups');
+ * As variávies da URL devem começar com ":", precisam ter nome único, excetuando o nome "id",
+ * podem ser do tipo integer ou string e devem ser declaradas após passar o nome do controller ao qual ela pertece.
+ * ex:
+ * example:id(integer)/foo
+ * example:name(string)/foo
+ *
+ * Quando a variável for do tipo integer, a declarção do tipo pode ser omitida.
+ *
+ * OBS!!
+ * O controller mais à direita nao deve possir variáveis pois o sistema gera automaticamente.
  * 
  * 
  *  *** Adicionando Acoes às Rotas ***
