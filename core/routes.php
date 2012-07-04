@@ -62,9 +62,12 @@ class Route {
 	private $_predefined_routes;
 
 	public function __construct($routes){
-		$this->_routes_container = $routes;
+
+		$this->_routes_container = $this->expand_url_path($routes);
+
 		$this->_routes_pattern = self::get_routes_pattern();
 		$this->_predefined_routes = self::get_predefined_routes();
+
 		$this->create_routes_list();
 		$this->insert_predefined_routes();
 	}
@@ -99,7 +102,9 @@ class Route {
 			}
 
 		$routes_pattern = self::replace_controller($controller, $routes_pattern);
+		$routes_pattern = self::replace_url($controller, $routes_pattern);
 		$this->_routes = array_merge($this->_routes, array_values($routes_pattern));
+
 		}
 	}
 
@@ -138,27 +143,48 @@ class Route {
 	static private function get_routes_pattern(){
 
 		$pattern = array(
-							"index" 	=> array('url'=>'/^\/__controller__\/?$/'						,'controller'=>'__controller__','view'=>'index'),
-							"list" 		=> array('url'=>'/^\/__controller__\/list\/(?P<page>\d+)\/?$/'	,'controller'=>'__controller__','view'=>'index'),
-							"new" 		=> array('url'=>'/^\/__controller__\/new\/?$/'					,'controller'=>'__controller__','view'=>'new'),
-							"create" 	=> array('url'=>'/^\/__controller__\/create\/?$/'				,'controller'=>'__controller__','view'=>'create'),
-							"show" 		=> array('url'=>'/^\/__controller__\/(?P<id>\d+)$/'				,'controller'=>'__controller__','view'=>'show'),
-							"edit" 		=> array('url'=>'/^\/__controller__\/(?P<id>\d+)\/edit\/?$/'	,'controller'=>'__controller__','view'=>'edit'),
-							"alter" 	=> array('url'=>'/^\/__controller__\/alter\/?$/'				,'controller'=>'__controller__','view'=>'alter'),
-							"delete" 	=> array('url'=>'/^\/__controller__\/(?P<id>\d+)\/delete\/?$/'	,'controller'=>'__controller__','view'=>'delete'),
+							"index" 	=> array('url'=>'/^\/__url__\/?$/'						,'controller'=>'__controller__','view'=>'index'),
+							"list" 		=> array('url'=>'/^\/__url__\/list\/(?P<page>\d+)\/?$/'	,'controller'=>'__controller__','view'=>'index'),
+							"new" 		=> array('url'=>'/^\/__url__\/new\/?$/'					,'controller'=>'__controller__','view'=>'new'),
+							"create" 	=> array('url'=>'/^\/__url__\/create\/?$/'				,'controller'=>'__controller__','view'=>'create'),
+							"show" 		=> array('url'=>'/^\/__url__\/(?P<id>\d+)$/'			,'controller'=>'__controller__','view'=>'show'),
+							"edit" 		=> array('url'=>'/^\/__url__\/(?P<id>\d+)\/edit\/?$/'	,'controller'=>'__controller__','view'=>'edit'),
+							"alter" 	=> array('url'=>'/^\/__url__\/alter\/?$/'				,'controller'=>'__controller__','view'=>'alter'),
+							"delete" 	=> array('url'=>'/^\/__url__\/(?P<id>\d+)\/delete\/?$/'	,'controller'=>'__controller__','view'=>'delete'),
 						);
 		return $pattern;
 	}
 
 	/**
+	 * Substitui o valor de $url na rota.
+	 * @access private
+	 * @param string $url
+	 * @param string $route
+	 */
+	private function replace_url( $url, $routes ) {
+		foreach( $routes as $key => &$route ){
+			$route = str_replace( "__url__", $url, $route );
+		}
+		return $routes;
+	}
+
+
+		/**
 	 * Substitui o valor de $controller na rota.
 	 * @access private
 	 * @param string $controller
 	 * @param string $route
 	 */
-	private function replace_controller($controller, $routes){
-		foreach($routes as $key => &$route)
-			$route = str_replace("__controller__", $controller, $route);
+	private function replace_controller( $controller, $routes ) {
+		foreach( $routes as $key => &$route ){
+
+			$start = strrpos($controller, '/',-2);
+
+			if($start > 0)
+				$controller = substr($controller, $start+1);
+
+			$route = str_replace( "__controller__", $controller, $route );
+		}
 		return $routes;
 	}
 
@@ -169,9 +195,9 @@ class Route {
 	 * @param string $route
 	 * @return string
 	 */
-	private function replace_view($view, $route){
+	private function replace_view( $view, $route ) {
 
-		return str_replace("__view__", $view, $route);
+		return str_replace( "__view__", $view, $route );
 	}
 
 	/**
@@ -204,15 +230,15 @@ class Route {
 	 */
 	private function add_routes_in_the_list($add, &$routes){
 
-		if(!is_array($add)){
-			$add = array($add);
+		if( !is_array( $add ) ) {
+			$add = array( $add );
 		}
-		foreach($add as $new_view){
-			if(array_key_exists($new_view, $routes)){
-				throw new Exception("This route ($add) cannot be added because is already set. ", 1);
+		foreach( $add as $new_view ) {
+			if(array_key_exists( $new_view, $routes ) ) {
+				throw new Exception( "This route ($add) cannot be added because is already set. ", 1 );
 			} else {
-				$new_route = array("{$new_view}" => self::replace_view($new_view, $this->_default_route_pattern));
-				$routes = array_merge($routes, $new_route);
+				$new_route = array( "{$new_view}" => self::replace_view( $new_view, $this->_default_route_pattern ) );
+				$routes = array_merge( $routes, $new_route );
 			}
 		}
 	}
@@ -222,9 +248,9 @@ class Route {
 	 * @access private
 	 * @return array
 	 */
-	private function get_predefined_routes(){
+	private function get_predefined_routes() {
 		$predefined = array(
-							array("url"=>'/^\/?$/' ,"controller"=>"application","view"=>"index")
+							array( "url"=>'/^\/?$/' ,"controller"=>"application","view"=>"index" )
 						);
 
 		return $predefined;
@@ -235,7 +261,94 @@ class Route {
 	 * @access private
 	 * @return void
 	 */
-	private function insert_predefined_routes(){
-		$this->_routes = array_merge($this->_routes, $this->_predefined_routes);
+	private function insert_predefined_routes() {
+		$this->_routes = array_merge( $this->_routes, $this->_predefined_routes );
+	}
+
+	/**
+	 * Converte a url no formato minimizado para o formato correto.
+	 * 
+	 */
+	private function expand_url_path($routes) {
+
+		$pattern = "\/(?P<word>\word_type+)";
+		$default_type = "\d";
+
+		foreach ( $routes as &$route ) {
+			
+			// para nao alterar o valor inicial.
+			$pattern_sample = $pattern;
+
+			$word_type = "";
+			// tipo padrao
+			$default_type_sample = $default_type;
+			// palavra a ser substuida.
+			$word_container = "";
+
+			$route = str_replace( "/", "\/", $route );
+
+			while( $pos = strpos( $route, ":" ) ) {
+
+				$word = "";
+				$start = $pos;
+				$end = strpos( $route, "\\", $pos );
+
+
+				// pegando a palavra sem o ":" e a ultima barra.
+				$word = substr( $route, $start+1, $end-$start-1 );
+				// armazendo a palavra ser alterar ao fim da interecao.
+				$word_container = substr( $route, $start, $end-$start);
+
+
+				// procurando pelo tipo da palavra.
+				// caso exista.
+				$word_type_start = strpos( $word, "(" );
+
+				if( $word_type_start !== false ) {
+
+					$word_type_end = strpos( $word, ")", $word_type_start );
+
+					$word_type = substr( $word, $word_type_start+1, $word_type_end-$word_type_start-1 );
+
+					// removendo o tipo da palavra.
+					$word = substr( $word, 0, $word_type_start );
+				}
+
+
+				// definindo o tipo da variavel.
+				switch( $word_type ){
+					case "integer":
+						$default_type_sample = "\d";
+					break;
+					
+					case "string":
+						$default_type_sample = "\w";
+					break;
+				}
+
+				$pattern_sample = str_replace( "\word_type", $default_type_sample, $pattern_sample );
+
+
+				// transformando a palavra caso ela seja um "id".
+				if( $word == "id" ) {
+
+					$previous_word = substr($route, 0, $start);
+					
+					$before_previous_word = strrpos($previous_word, "/");
+					if($before_previous_word !== false){
+						$previous_word = substr($previous_word, $before_previous_word+1);
+					}
+
+					$word = $previous_word."_id";
+				}
+				
+				$word = str_replace( "word", $word, $pattern_sample );
+
+				// modificando apenas a primeira ocorrencia.
+				$route = preg_replace( "/$word_container/", $word, $route, 1 );
+			}
+		}
+
+		return $routes;
 	}
 }

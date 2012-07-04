@@ -1,6 +1,14 @@
 <?php 
 
-$routes = array("example");
+$routes = array(
+                "example",
+                "example/foo",
+                "example:id/foo",
+                "example/foo/bar",
+                "example:id/foo/bar",
+                "example:id/foo:id/bar",
+                "example:id/foo:id/bar:id/foobar",
+                );
 
 
 /**
@@ -13,6 +21,23 @@ $routes = array("example");
  *  *** Novas Rotas ***
  * Cada módulo novo deve ser inserido, único e exclusivamente, na variável acima.
  * ex:
+ * $routes = array('users','groups');
+ * 
+ *  *** Rotas Aninhadas ***
+ * Módulos podem conter relação com outros módulos e por isso precisam passar a sua hierarquiedade na url, ou seja, o seu parentesco.
+ * Dessa forma, voce pode relacionar um módulo pai com o seu filho na seguinte forma.
+ * example/foo
+ * isso quer dizer que o múdolo a ser acessado deve ser o foo, que por sua vez, se relaciona com example diretamente.
+ * mais exemplos:
+ * classroom/students, folder/files, device/resource
+ * 
+ * A definicao das rotas pode ser do tipo
+ * example/foo
+ * example:id/foo
+ * example:id/foo/bar
+ * example:id/foo:id/bar
+ * 
+ * 
  * $routes = array('users','groups');
  * 
  * 
