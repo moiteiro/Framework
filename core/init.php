@@ -11,4 +11,4 @@ set_exception_handler('dflt_exception_handler');
 set_error_handler('dflt_error_handler');
 
 
-$route = new Route($routes);
+$route = new System\Route($routes);
