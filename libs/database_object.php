@@ -47,7 +47,7 @@ class DatabaseObject {
 	* @param int $id
 	* @return object|bool
 	*/
-	public static function find_by_id($id=0){
+	public static function find_by_id( $id=0 ) {
 		
 		global $database;
 		
@@ -63,15 +63,15 @@ class DatabaseObject {
 	* @param int $id
 	* @return object
 	*/
-	public static function find_all_in_range($start, $length){
+	public static function find_all_in_range( $start, $length ) {
 		
 		global $database;
 
-		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." LIMIT %s, %s",
-							$database->escape_value($start), 
-							$database->escape_value($length));
+		$query  = sprintf( "SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." LIMIT %s, %s",
+							$database->escape_value( $start ), 
+							$database->escape_value( $length ) );
 
-		$result_array['result'] = self::find_by_sql($query);
+		$result_array['result'] = self::find_by_sql( $query );
 
 		$result_array['total'] = $database->found_rows();
 
@@ -90,18 +90,18 @@ class DatabaseObject {
 	* @param string $column_name
 	* @return array object
 	*/
-	public static function find_all_in_range_order_by($start, $length, $column_name){
+	public static function find_all_in_range_order_by( $start, $length, $column_name ) {
 
 		global $database;
 
-		$column_name = self::organize_order_by_clause($column_name); // o resultado ja e com o valores escapados.
+		$column_name = self::organize_order_by_clause( $column_name ); // o resultado ja e com o valores escapados.
 
-		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." ORDER BY $column_name LIMIT %s, %s",
-							$database->escape_value($start), 
-							$database->escape_value($length)
+		$query  = sprintf( "SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." ORDER BY $column_name LIMIT %s, %s",
+							$database->escape_value( $start ), 
+							$database->escape_value( $length )
 						);
 
-		$result_array['result'] = self::find_by_sql($query);
+		$result_array['result'] = self::find_by_sql( $query );
 		$result_array['total']  = $database->found_rows();
 
 		return $result_array;
