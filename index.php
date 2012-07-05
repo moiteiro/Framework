@@ -12,7 +12,10 @@ if($route->check_url($url,$matches)){
 		
 	$params = array_merge($params, $matches);
 	
-	include(CONTROLLER_PATH.DS.$route->controller.'.php');
+	require_once( CONTROLLER_PATH.DS.'application.php' );
+
+	if($route->controller != "application") // para que o controller aplication nao seja incluido mais de uma vez.
+		include( CONTROLLER_PATH.DS.$route->controller.'.php' );
 	
 	$match_found = true;
 		
