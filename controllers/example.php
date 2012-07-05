@@ -74,7 +74,7 @@ switch($route->view){
 		// Validar os Dados
 		// *****************//
 		
-		$$object = new $$Class();
+		$$object = new $Class();
 		// pegando todos os campos da tabela de usuários e seus respentivos tipos
 		$db_fields = $$object->get_attributes_type();
 		
