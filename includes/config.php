@@ -34,6 +34,7 @@ define('CONTROLLER_PATH',SERVER_ROOT.DS.'controllers');
 define('MODEL_PATH',SERVER_ROOT.DS.'models');
 define('VIEW_PATH',SERVER_ROOT.DS.'views');
 
+define('LIBS_PATH',SERVER_ROOT.DS.'libs');
 
 // Database
 define('DATABASE',$db);
@@ -47,11 +48,11 @@ define('PER_PAGE', 3);
 
 
 // Includindo libs
-require_once(SERVER_ROOT.DS.'libs'.DS.'database.php');
-require_once(SERVER_ROOT.DS.'libs'.DS.'database_object.php');
-require_once(SERVER_ROOT.DS.'libs'.DS.'functions.php');
-require_once(SERVER_ROOT.DS.'libs'.DS.'validation.php');
-require_once(SERVER_ROOT.DS.'libs'.DS.'security.php');
+require_once(LIBS_PATH.DS.'database.php');
+require_once(LIBS_PATH.DS.'database_object.php');
+require_once(LIBS_PATH.DS.'functions.php');
+require_once(LIBS_PATH.DS.'validation.php');
+require_once(LIBS_PATH.DS.'security.php');
 
 
 // Tipos
