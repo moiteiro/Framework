@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<menu>
+	<links>
+		<link controller='dashboard' >
+        	<title>Dashboard</title>
+        	<url>dashboard</url>
+		</link>
+		<link controller='modules' >
+        	<title>Modulos</title>
+        	<url>modules</url>
+        	<links>
+        		<link>
+        			<title>Modulos</title>
+        			<url>modules</url>
+        		</link>
+        	</links>
+		</link>
+	</links>
+</menu>
