@@ -125,6 +125,17 @@
 	}
 	
 	/**
+	* Converte o formato DD/MM/YYYY para timestamp (Database) YYYY-MM-DD
+	* @param string $date
+	* @return string
+	*/
+	function date_format_YMD($date){
+		$date = explode('/',$date);
+		$date = array_reverse($date);
+		return implode('-',$date);	
+	}
+	
+	/**
 	* Corta o texto e retorna  o conteúdo de acordo com o tamanho explicitado.
 	* @param string $text
 	* @param integer $size
