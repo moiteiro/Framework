@@ -9,7 +9,7 @@
 */
  
 
-class DatabaseObject {
+abstract class DatabaseObject {
 	
 	/**
 	* o nome da tabela relacionada a essa classe
