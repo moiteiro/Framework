@@ -8,21 +8,28 @@ $match_found = false;
 
 $params = array_merge($params,$_POST);
 
-if($route->check_url($url,$matches)){
+if($route_app->check_url($url,$matches)){
 		
 	$params = array_merge($params, $matches);
 	
-	require_once( CONTROLLER_PATH.DS.'application.php' );
+	try{
 
-	if($route->controller != "application") // para que o controller aplication nao seja incluido mais de uma vez.
-		include( CONTROLLER_PATH.DS.$route->controller.'.php' );
-	
-	$match_found = true;
+		require_once( CONTROLLER_PATH.DS.'application.php' );
+
+		if($route_app->controller != "application") // para que o controller aplication nao seja incluido mais de uma vez.
+			include( CONTROLLER_PATH.DS.$route_app->controller.'.php' );
+
+		$match_found = true;
 		
-	if (file_exists(VIEW_PATH.DS.'layouts'.DS.$route->controller.'.php')){
-		include(VIEW_PATH.DS.'layouts'.DS.$route->controller.'.php');
-	} else {
-		include(VIEW_PATH.DS.'layouts'.DS.'application.php');
+		if (file_exists(VIEW_PATH.DS.'layouts'.DS.$route_app->controller.'.php')){
+			include(VIEW_PATH.DS.'layouts'.DS.$route_app->controller.'.php');
+		} else {
+			include(VIEW_PATH.DS.'layouts'.DS.'application.php');
+		}
+
+	} catch(Exception $e){
+		
+		// tratar os erros aqui
 	}
 }
 
