@@ -2,6 +2,14 @@
 
 namespace System;
 
+/**
+ * Class para a geração de menus da aplicação.
+ * O menu é gerado a partir das rotas do sistema ou pode algum arquivo em xml.
+ * @author Bruno Moiteiro <bruno.moiteiro@gmail.com>
+ * @version 1.0
+ * @copyright Copyright (c) 2012, Bruno Moiteiro
+ */
+
 class Menu{
 
 	/**
@@ -33,9 +41,9 @@ class Menu{
 
 		$xml = simplexml_load_file( $this->_xml_menu_path );
 
-		$links = $xml->links;
+		$links = $xml->children();
 
-		$menu = $this->expand_menu($links->link);
+		$menu = $this->expand_menu($links);
 
 		return $menu;
 
