@@ -34,6 +34,14 @@ class Security {
 		// essa funcao retorna uma string de 100 caracteres
 		return  base64_encode(crypt($string,$this->salt_SHA_256));
 	}
+
+	/**
+	 * Cria um salt único.
+	 * Esse eh usado para o cadastro de senhas e autenticação do usuário.
+	 */
+	public function create_unique_salt(){
+		return sha1(mt_rand());
+	}
 }
 
 
