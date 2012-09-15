@@ -1,1 +1,10 @@
 Meu Framework
+
+
+===== criar os links do sistema a partir da classe das rotas
+ tentar reutilizar a funcao que expande a url parar criar os links.
+  essa dependecia é necessária pois existem coisos onde vários id precisam ser passados na ordem correta. ex: dashboard/1/user/2
+  a nova funcao deve pegar o params e fazer essas conversao dos valores.
+
+
+  
