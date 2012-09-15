@@ -2,17 +2,16 @@
 
 namespace System;
 
-
 /** 
-* Class que manipula as rotas do sistema. As rotas devem ser definidas no arquivo /config/routes.php
-* As rotas sao checadas de acordo com a url do navegador.
+* Class que manipula as rotas do sistema. As rotas devem ser definidas no arquivo /config/routes.php <br/>
+* As rotas sao checadas de acordo com a url do navegador.<br/>
 * A class ainda provê a funcionalidade de exporta as rotas para XML, assim como tratá-las diretamente.
 * 
 * @author Bruno Moiteiro <bruno.moiteiro@gmail.com>
 * @version 1.1
 * @copyright Copyright (c) 2012, Bruno Moiteiro
 */
-class Route {
+class Route extends File{
 
 	/**
 	 * Armazena o valor do controller.
@@ -27,6 +26,27 @@ class Route {
 	 * @var string
 	 */
 	public $view;
+
+	/**
+	 * Link com o endereço de criar um item
+	 * @access public
+	 * @var string
+	 */
+	public $link_create;
+
+	/**
+	 * Link com o endereço de editar um item
+	 * @access public
+	 * @var string
+	 */
+	public $link_edit;
+
+	/**
+	 * Link com o endereço de remover um item
+	 * @access public
+	 * @var string
+	 */
+	public $link_remove;
 
 	/**
 	 * Armazena as rotas criadas pelo sistema.
@@ -64,80 +84,110 @@ class Route {
 	 */
 	private $_predefined_routes;
 
-	public function __construct($routes){
+	public function __construct(){}
 
-		$this->_routes_container = $this->expand_url_path($routes);
+	/**
+	 * Funcao que organiza e gera as rotas do sistema a partir do array de rotas definidas em /includes/rotas.php
+	 * @access public
+	 * @param array $routes
+	 * @return void
+	 */
+	public function generate( $routes ){
+
+		$this->_routes_container = $this->expand_url_path( $routes );
 
 		$this->_routes_pattern = self::get_routes_pattern();
 		$this->_predefined_routes = self::get_predefined_routes();
 
 		$this->create_routes_list();
 		$this->insert_predefined_routes();
-
-		echo "<pre>".print_r($this->_routes,1)."</pre>";
 	}
-
 
 	/**
 	 * Funcao que cria as rotas de acordo com os padroes do sistema.
 	 * As rotas definidas pelo usuario serao modificadas dentro dos padores 
 	 * @access private
 	 */
-	private function create_routes_list(){
+	private function create_routes_list() {
 
-		foreach($this->_routes_container as $key => $value){
+		foreach( $this->_routes_container as $key => $value ) {
 
 			// essa variavel serve para que o valor original $_routes_pattern nao seja alterado
 			$routes_pattern = $this->_routes_pattern;
 
 			// pegando o valor correto do controller.
-			if(!is_array($value)){
+			if( !is_array( $value ) ) {
 				$controller = $value;
 			} else {
 				$controller = $key;
-				if(isset($value['remove'])){
-					self::remove_routes_from_list($value['remove'], $routes_pattern);
+				if( isset( $value['remove'] ) ) {
+					self::remove_routes_from_list( $value['remove'], $routes_pattern );
 				} 
-				if(isset($value['add'])){
-					self::add_routes_in_the_list($value['add'], $routes_pattern);
+				if( isset( $value['add'] ) ) {
+					self::add_routes_in_the_list( $value['add'], $routes_pattern );
 				}
-				if(isset($value['add_by_reg_exp'])){
+				if( isset( $value['add_by_reg_exp'] ) ) {
 					// Implementar.
 				}
 			}
 
-		$routes_pattern = self::replace_controller($controller, $routes_pattern);
-		$routes_pattern = self::replace_url($controller, $routes_pattern);
-		$this->_routes = array_merge($this->_routes, array_values($routes_pattern));
+		$routes_pattern = self::replace_controller( $controller, $routes_pattern );
+		$routes_pattern = self::replace_url( $controller, $routes_pattern );
+		$this->_routes = array_merge( $this->_routes, array_values( $routes_pattern ) );
 
 		}
 	}
 
 	/**
-	 * Verifica se a url coencide com as rotas do sistema.
-	 * A funcao insere em $matches o url que coencidiu com a expressao regular
+	 * Verifica se a url coencide com as rotas do sistema.<br/>
+	 * A rotas são lidas a partir de um arquivo xml.
+	 * A funcao insere em $matches o url que coincidiu com a expressao regular
 	 * @access public 
 	 * @param string $url
 	 * @param mixed $matches
 	 * @return bool
 	 */
-	public function check_url($url, &$matches){
-		foreach($this->_routes as $route)
-			if(preg_match($route['url'],$url,$matches)){
-				$this->controller = $route['controller'];
-				$this->view       = $route['view'];
+	public function check_url( $url, &$matches ) {
+		$xml = simplexml_load_file( $this->_file_path );
+
+		foreach( $xml->route as $route )
+			if( preg_match( (string) $route->url, $url, $matches ) ) {
+				$this->controller = (string) $route->controller;
+				$this->view       = (string) $route->view;
 				return true;
 			}
 		return false;
 	}
 
 	/**
-	 * Exporta as rotas on formato XML.
+	 * Exporta as rotas para formato XML.
 	 * @access protected
 	 * @return void
 	 */
-	protected function create_XML_routes(){
-		//implementar
+	public function generate_xml() {
+
+		$handler = fopen( $this->_file_path, "w+" );
+		if( !$handler ) {
+			throw new \Exception("erro ao gerar o arquivo xml das rotas", 1);
+		}
+		
+		$xml = $this->organize_xml_routes();
+		$dom = dom_import_simplexml($xml)->ownerDocument;
+		$dom->formatOutput = TRUE;
+
+		fwrite( $handler, $dom->saveXML() );
+		fclose( $handler );
+	}
+
+	/**
+	 * Funcao para exportar nas configuracoes necessarias para gerar o menu.xml.<br/>
+	 * Esse funcao precisa ser rodada junto com @link{generate()} pois precisa ter acesso
+	 * ao array inicial das rotas.
+	 * @access protected
+	 * @return void
+	 */
+	public function export_as_menu(){
+		echo "<pre>".print_r($this->_routes_container, 1)."</pre>";
 	}
 
 	/**
@@ -145,17 +195,17 @@ class Route {
 	 * @access private
 	 * @return array
 	 */
-	static private function get_routes_pattern(){
+	static private function get_routes_pattern() {
 
 		$pattern = array(
-							"index" 	=> array('url'=>'/^\/__url__\/?$/'						,'controller'=>'__controller__','view'=>'index'),
-							"list" 		=> array('url'=>'/^\/__url__\/list\/(?P<page>\d+)\/?$/'	,'controller'=>'__controller__','view'=>'index'),
-							"new" 		=> array('url'=>'/^\/__url__\/new\/?$/'					,'controller'=>'__controller__','view'=>'new'),
-							"create" 	=> array('url'=>'/^\/__url__\/create\/?$/'				,'controller'=>'__controller__','view'=>'create'),
-							"show" 		=> array('url'=>'/^\/__url__\/(?P<id>\d+)$/'			,'controller'=>'__controller__','view'=>'show'),
-							"edit" 		=> array('url'=>'/^\/__url__\/(?P<id>\d+)\/edit\/?$/'	,'controller'=>'__controller__','view'=>'edit'),
-							"alter" 	=> array('url'=>'/^\/__url__\/alter\/?$/'				,'controller'=>'__controller__','view'=>'alter'),
-							"delete" 	=> array('url'=>'/^\/__url__\/(?P<id>\d+)\/delete\/?$/'	,'controller'=>'__controller__','view'=>'delete'),
+							"index" 	=> array( 'url'=>'/^\/__url__\/?$/'							, 'controller' => '__controller__', 'view' => 'index' ),
+							"list" 		=> array( 'url'=>'/^\/__url__\/list\/(?P<page>\d+)\/?$/'	, 'controller' => '__controller__', 'view' => 'index' ),
+							"new" 		=> array( 'url'=>'/^\/__url__\/new\/?$/'					, 'controller' => '__controller__', 'view' => 'new' ),
+							"create" 	=> array( 'url'=>'/^\/__url__\/create\/?$/'					, 'controller' => '__controller__', 'view' => 'create' ),
+							"show" 		=> array( 'url'=>'/^\/__url__\/(?P<id>\d+)$/'				, 'controller' => '__controller__', 'view' => 'show' ),
+							"edit" 		=> array( 'url'=>'/^\/__url__\/(?P<id>\d+)\/edit\/?$/'		, 'controller' => '__controller__', 'view' => 'edit' ),
+							"alter" 	=> array( 'url'=>'/^\/__url__\/alter\/?$/'					, 'controller' => '__controller__', 'view' => 'alter' ),
+							"delete" 	=> array( 'url'=>'/^\/__url__\/(?P<id>\d+)\/delete\/?$/'	, 'controller' => '__controller__', 'view' => 'delete' ),
 						);
 		return $pattern;
 	}
@@ -211,15 +261,15 @@ class Route {
 	 * @param array $routes
 	 * @return void
 	 */
-	private function remove_routes_from_list($remove, &$routes){
+	private function remove_routes_from_list( $remove, &$routes ) {
 
-		if(!is_array($remove) && isset($routes[$remove])){
-			unset($routes[$remove]);
-		} else if(is_array($remove)) {
+		if(!is_array( $remove ) && isset( $routes[$remove] ) ) {
+			unset( $routes[$remove] );
+		} else if( is_array( $remove ) ) {
 
-			foreach ($remove as $remove_route) {
-				if(array_key_exists($remove_route, $routes))
-					unset($routes[$remove_route]);
+			foreach ( $remove as $remove_route ) {
+				if( array_key_exists( $remove_route, $routes ) )
+					unset( $routes[$remove_route] );
 			}
 
 		}
@@ -233,7 +283,7 @@ class Route {
 	 * @param array $routes
 	 * @return void
 	 */
-	private function add_routes_in_the_list($add, &$routes){
+	private function add_routes_in_the_list( $add, &$routes ) {
 
 		if( !is_array( $add ) ) {
 			$add = array( $add );
@@ -255,7 +305,7 @@ class Route {
 	 */
 	private function get_predefined_routes() {
 		$predefined = array(
-							array( "url"=>'/^\/?$/' ,"controller"=>"application","view"=>"index" )
+							array( "url"=>'/^\/?$/' ,"controller" => "application", "view" => "index" )
 						);
 
 		return $predefined;
@@ -271,16 +321,26 @@ class Route {
 	}
 
 	/**
-	 * Converte a url no formato minimizado para o formato correto.
-	 * 
+	 * Converte as rotas no formato minimizado para o formato exetendido.
+	 * A funcao percorre todas as rotas fazendo um parse e criando as variáveis da URL.
+	 * @access private
+	 * @param array $routes
+	 * @return array
 	 */
-	private function expand_url_path($routes) {
+	private function expand_url_path( $routes ) {
+
+		// carregando o dicionário.
+		$dictionary = new Dictionary(DICTIONARY_PATH);
 
 		$pattern = "\/(?P<word>\word_type+)";
 		$default_type = "\d";
 
 		foreach ( $routes as &$route ) {
 			
+			// caso route seja um array, eh necessario garantir que apenas a url será tratada.
+			if(is_array($route))
+				$route = &$route['url'];
+
 			// para nao alterar o valor inicial.
 			$pattern_sample = $pattern;
 
@@ -301,9 +361,9 @@ class Route {
 
 				// pegando a palavra sem o ":" e a ultima barra.
 				$word = substr( $route, $start+1, $end-$start-1 );
+
 				// armazendo a palavra ser alterar ao fim da interecao.
 				$word_container = substr( $route, $start, $end-$start);
-
 
 				// procurando pelo tipo da palavra.
 				// caso exista.
@@ -327,7 +387,7 @@ class Route {
 					break;
 					
 					case "string":
-						$default_type_sample = "\w";
+						$default_type_sample = "[\w\-]";
 					break;
 				}
 
@@ -342,6 +402,9 @@ class Route {
 					$previous_word = substr($previous_word, $before_previous_word+1);
 				}
 
+				// pegando o singular da palavra.
+				$previous_word = $dictionary->get_single($previous_word);
+
 				$word = $previous_word."_id";
 				
 				$word = str_replace( "word", $word, $pattern_sample );
@@ -351,5 +414,114 @@ class Route {
 			}
 		}
 		return $routes;
+	}
+
+
+	private function expand_for_link_path( $routes ) {
+
+		// carregando o dicionário.
+		$dictionary = new Dictionary(DICTIONARY_PATH);
+
+		$pattern = "\/(?P<word>\word_type+)";
+		$default_type = "\d";
+
+		foreach ( $routes as &$route ) {
+			
+			// caso route seja um array, eh necessario garantir que apenas a url será tratada.
+			if(is_array($route))
+				$route = &$route['url'];
+
+			// para nao alterar o valor inicial.
+			$pattern_sample = $pattern;
+
+			$word_type = "";
+			// tipo padrao
+			$default_type_sample = $default_type;
+			// palavra a ser substuida.
+			$word_container = "";
+
+			$route = str_replace( "/", "\/", $route );
+
+			while( $pos = strpos( $route, ":" ) ) {
+
+				$word = "";
+				$start = $pos;
+				$end = strpos( $route, "\\", $pos );
+
+
+				// pegando a palavra sem o ":" e a ultima barra.
+				$word = substr( $route, $start+1, $end-$start-1 );
+
+				// armazendo a palavra ser alterar ao fim da interecao.
+				$word_container = substr( $route, $start, $end-$start);
+
+				// procurando pelo tipo da palavra.
+				// caso exista.
+				$word_type_start = strpos( $word, "(" );
+
+				if( $word_type_start !== false ) {
+
+					$word_type_end = strpos( $word, ")", $word_type_start );
+
+					$word_type = substr( $word, $word_type_start+1, $word_type_end-$word_type_start-1 );
+
+					// removendo o tipo da palavra.
+					$word = substr( $word, 0, $word_type_start );
+				}
+
+
+				// definindo o tipo da variavel.
+				switch( $word_type ){
+					case "integer":
+						$default_type_sample = "\d";
+					break;
+					
+					case "string":
+						$default_type_sample = "[\w\-]";
+					break;
+				}
+
+				$pattern_sample = str_replace( "\word_type", $default_type_sample, $pattern_sample );
+
+
+				// colocando um prefixo na variavel usando a palavra anterior.
+				$previous_word = substr($route, 0, $start);
+				
+				$before_previous_word = strrpos($previous_word, "/");
+				if($before_previous_word !== false){
+					$previous_word = substr($previous_word, $before_previous_word+1);
+				}
+
+				// pegando o singular da palavra.
+				$previous_word = $dictionary->get_single($previous_word);
+
+				$word = $previous_word."_id";
+				
+				$word = str_replace( "word", $word, $pattern_sample );
+
+				// modificando apenas a primeira ocorrencia.
+				$route = preg_replace( "/$word_container/", $word, $route, 1 );
+			}
+		}
+		return $routes;
+	}
+
+	/**
+	 * Funcao que monta a estrutura das rotas no formato xml.
+	 * @access private
+	 * @return array
+	 */
+	private function organize_xml_routes() {
+
+		$xml = new \SimpleXMLElement("<routes></routes>");
+
+		foreach( $this->_routes as $route ) {
+			$xmlroute = $xml->addChild( "route" );
+
+			foreach( $route as $key => $value )
+				$xmlroute->addChild( $key, $value );
+		}
+
+		return $xml;
 	}
 }
