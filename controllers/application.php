@@ -7,7 +7,7 @@ require_once(LIBS_PATH.DS.'menu.php');
 
 
 // gerando o menu da aplicacao.
-$application_menu = new System\Menu(SERVER_ROOT.DS.'includes'.DS.'routes.xml');
+$application_menu = new System\Menu(INCLUDES_PATH.DS.'menu.xml');
 $menu = $application_menu->menu_generator();
 
 ?>

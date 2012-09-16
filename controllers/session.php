@@ -3,7 +3,7 @@
 // prevent the direct access
 defined('_PREVENT-DIRECT-ACCESS') or die ("Access restrict");
 
-switch($route->view){
+switch($route_app->view){
 	case "create":
 		$session->login($params);
 		
