@@ -15,19 +15,19 @@ defined('_PREVENT-DIRECT-ACCESS') or die ("Access restrict");
         <meta name="author" content="Bruno Moiteiro">
         <meta http-equiv="content-language" content="pt-br">
         
-        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-        <meta name="description" content="Free Web tutorials on HTML, CSS, XML" /> 
-        <meta name="keywords" content="HTML, CSS, XML" /> 
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="description" content="" /> 
+        <meta name="keywords" content="Framework" /> 
         
         <!--Com essa tag nada será indexado-->
         <meta name="robots" content="noindex,nofollow">
         
         <!--Styles-->
-        <link href="/design/stylesheets/style.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo WEBSITE ?>/design/stylesheets/style.css" rel="stylesheet" type="text/css" />
         
         
         <!--Scripts-->
-		<script type='text/javascript' src='../../scripts/jquery.js'></script>
+		<script type='text/javascript' src='<?php echo WEBSITE ?>/scripts/jquery.js'></script>
         
         
     </head>
