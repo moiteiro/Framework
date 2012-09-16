@@ -9,7 +9,7 @@
 */
  
 
-abstract class DatabaseObject {
+class DatabaseObject {
 	
 	/**
 	* o nome da tabela relacionada a essa classe
@@ -27,6 +27,22 @@ abstract class DatabaseObject {
 	* @var array
 	*/
 	protected static $db_fields;
+
+	/**
+	* Armazena a quantidade de resultados da ultima query executada.
+	* @access protected
+	* @var integer
+	*/
+	protected static $total_rows;
+
+	/**
+	* Bloqueia a contagem das colunas da tabela.
+	* @access protected
+	* @var bool
+	*/
+	protected static $count_lock;
+
+
 	
 	/**
 	* Retorna todas entradas da tabela
@@ -37,7 +53,7 @@ abstract class DatabaseObject {
 	*/
 	public static function find_all(){
 		
-		return self::find_by_sql("SELECT * FROM ".static::$table_name);
+		return self::find_by_sql("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name);
 	}
 	
 	/**
@@ -47,7 +63,7 @@ abstract class DatabaseObject {
 	* @param int $id
 	* @return object|bool
 	*/
-	public static function find_by_id( $id=0 ) {
+	public static function find_by_id($id=0){
 		
 		global $database;
 		
@@ -63,15 +79,17 @@ abstract class DatabaseObject {
 	* @param int $id
 	* @return object
 	*/
-	public static function find_all_in_range( $start, $length ) {
+	public static function find_all_in_range($start, $length){
 		
 		global $database;
 
-		$query  = sprintf( "SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." LIMIT %s, %s",
-							$database->escape_value( $start ), 
-							$database->escape_value( $length ) );
+		self::$count_lock = true;
 
-		$result_array['result'] = self::find_by_sql( $query );
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length));
+
+		$result_array['result'] = self::find_by_sql($query);
 
 		$result_array['total'] = $database->found_rows();
 
@@ -90,18 +108,20 @@ abstract class DatabaseObject {
 	* @param string $column_name
 	* @return array object
 	*/
-	public static function find_all_in_range_order_by( $start, $length, $column_name ) {
+	public static function find_all_in_range_order_by($start, $length, $column_name){
 
 		global $database;
 
-		$column_name = self::organize_order_by_clause( $column_name ); // o resultado ja e com o valores escapados.
+		self::$count_lock = true;
 
-		$query  = sprintf( "SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." ORDER BY $column_name LIMIT %s, %s",
-							$database->escape_value( $start ), 
-							$database->escape_value( $length )
+		$column_name = self::organize_order_by_clause($column_name); // o resultado ja e com o valores escapados.
+
+		$query  = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM ".static::$table_name." ORDER BY $column_name LIMIT %s, %s",
+							$database->escape_value($start), 
+							$database->escape_value($length)
 						);
 
-		$result_array['result'] = self::find_by_sql( $query );
+		$result_array['result'] = self::find_by_sql($query);
 		$result_array['total']  = $database->found_rows();
 
 		return $result_array;
@@ -122,6 +142,8 @@ abstract class DatabaseObject {
 	public static function find_all_in_range_where($start, $length, $where){
 
 		global $database;
+
+		self::$count_lock = true;
 
 		$where = self::organize_where_clause($where);// o resultado ja eh com os valores escapados.
 
@@ -151,6 +173,8 @@ abstract class DatabaseObject {
 
 		global $database;
 
+		self::$count_lock = true;
+
 		$where       = self::organize_where_clause($where); // o resultado ja esta escapado.
 		$column_name = self::organize_order_by_clause($column_name); // o resultado ja esta escapado.
 
@@ -158,7 +182,7 @@ abstract class DatabaseObject {
 							$database->escape_value($start), 
 							$database->escape_value($length)
 						);
-
+		
 		$result_array['result'] = self::find_by_sql($query);
 		$result_array['total']  = $database->found_rows();
 
@@ -176,6 +200,12 @@ abstract class DatabaseObject {
 	public static function find_by_sql($sql=""){
 		global $database;
 		$result_set = $database->query($sql);
+
+		if( self::$count_lock != true )
+			$database->found_rows();
+		else
+			self::$count_lock = false;
+
 		$object_array = array();
 		while ( $row = $database->fetch_array($result_set)){
 			$object_array[] = self::instantiate($row);
@@ -285,6 +315,15 @@ abstract class DatabaseObject {
 		return $clean_attributes;
 	}
 	
+	/**
+	 * Retorna a quantidade de resultados armazenado em {@link $_total_rows}
+	 * @access private
+	 * @return integer
+	 */
+	public function get_total_rows(){
+		return self::$total_rows;
+	}
+
 	/**
 	* Insere os valores dos atributos que estiverem nas colunas da tabela declarada em {@link $table_name} 
 	* Retorna true e seta o valor id no $id da classe que implementou esse classe se a linha for inserida com sucesso, caso contrário, false
@@ -413,6 +452,15 @@ abstract class DatabaseObject {
 		return $obj_content;
 	}
 	
+	/**
+	 * Insere o resultado da ulitma query executada em {@link $_total_rows}
+	 * @access private
+	 * @return void
+	 */
+	private function set_total_rows(){
+		global $database;
+		self::$total_rows = $database->found_rows();
+	}
 	
 	/**
 	* Seta os valores passados através de uma array nas propriedades declaradas na classe
@@ -488,7 +536,7 @@ abstract class DatabaseObject {
 	}
 	
 	/**
-	 * Organiza a sentença WHERE a partir de um array em uma string
+	 * Organiza o senteca WHERE a partir de um array em uma string
 	 * O operador utilizado na comparacao sera o "=".
 	 * Cada $key sera avaliada com o seu respectivo $value.
 	 * O resultado eh uma string escapada.
@@ -506,15 +554,15 @@ abstract class DatabaseObject {
 		} else {
 			foreach($values as $key => $value){
 				if(is_int($key))
-					throw new Exception("A column name cannot be an integer", 1);
+					$temp[] = $value;
 				else
-				$temp[] = sprintf(	"%s = '%s'", 
+					$temp[] = sprintf(	"%s = '%s'", 
 								  	$database->escape_value($key),
 								  	$database->escape_value($value)
 								 );
 			}
 
-			$values = implode(" AND ",$temp);
+			$values = implode("AND ",$temp);
 
 		}
 
