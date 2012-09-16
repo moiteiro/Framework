@@ -138,7 +138,10 @@ class Validation {
 			switch($type){
 				
 				case 'integer':
-					
+					if ($params[$param] == 0 && is_numeric($params[$param])){
+						$this->set_validation_result(1, $param, $type);
+						continue; 
+					}
 					if (!$this->integer_number($params[$param])) { 
 						$this->set_validation_result(0, $param, $type);
 						$this->increment_error();

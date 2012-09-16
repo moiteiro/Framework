@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<menu>
+	<links>
+		<link controller='dashboard' >
+        	<title>Dashboard</title>
+        	<url>dashboard</url>
+        	
+        	<links>
+        		<link controller='dashboard' >
+		        	<title>Usuarios</title>
+		        	<url>users</url>
+				</link>
+        	</links>
+		</link>
+		<link controller='modules' >
+        	<title>Modulos</title>
+        	<url>modules</url>
+        	<links>
+        		<link controller='modules/portfolios' >
+			    	<title>Portfolio</title>
+			    	<url>portfolios</url>
+				</link>
+				<link controller='modules/employees' >
+			    	<title>Funcionarios</title>
+			    	<url>employees</url>
+				</link>
+        	</links>
+		</link>
+	</links>
+</menu>
