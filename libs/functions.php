@@ -155,12 +155,11 @@
 			// Ela terá que ser incluida totalmente.
 			if($first_space !== false){
 				$text = substr($text,0 ,$size+$first_space);	
-				$text .= " ...";
-			}
-			
+				$text .= " ... ";
+			} 
 		}
 		
-		return $text;
+		return array("text"=>$text,"amount"=>$total);
 	}
 	
 	/**
@@ -171,7 +170,4 @@
 	function get_filename($path){
 		return basename($path,'.php');
 	}
-
-
-
 ?>
