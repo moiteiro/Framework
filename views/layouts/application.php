@@ -38,8 +38,8 @@ defined('_PREVENT-DIRECT-ACCESS') or die ("Access restrict");
         
         <?php 
 		
-		if(file_exists(VIEW_PATH.DS.$route->controller.DS.$route->view.".php"))
-			include(VIEW_PATH.DS.$route->controller.DS.$route->view.".php");
+		if(file_exists(VIEW_PATH.DS.$route_app->controller.DS.$route_app->view.".php"))
+			include(VIEW_PATH.DS.$route_app->controller.DS.$route_app->view.".php");
 		?>
         
     </body>

@@ -1,4 +1,4 @@
-<form action="<?php echo WEBSITE.DS.$route->controller.DS.'alter' ;?>" 
+<form action="<?php echo WEBSITE.DS.$route_app->controller.DS.'alter' ;?>" 
 	  id="form-create-user" 
       class="block-content form" 
       enctype="multipart/form-data" 
