@@ -26,7 +26,6 @@ if(!isset($route_app->view)){
 switch($route_app->view){
 	
 	case "index":
-	case "list":
 	
 		$$objects = $Class::find_all();
 		
@@ -276,5 +275,48 @@ switch($route_app->view){
 		
 	break;
 	
+	case "list":
+
+		session_start();
+
+		$start       = $_GET['iDisplayStart'];
+		$length      = $_GET['iDisplayLength'];
+		$index       = $_GET['iSortCol_0'];
+		$orientation = $_GET['sSortDir_0'];
+
+		// colunas da tabela que deseja fazer um sort.
+		//$columns = array("column1","column2","...","id");	
+		$order = array($columns[$index] => $orientation);
+
+		$$objects = $Class::find_all_in_range_order_by($start, $length, $order);
+
+		$array = array();
+
+		foreach ($$objects['result'] as $object) {
+
+			$links = "<a href='".WEBSITE.DS.$route_app->controller.DS.$object->id.DS."show' >Show</a>";
+           
+			$links .="<a href='".WEBSITE.DS.$route_app->controller.DS.$object->id.DS."edit' >Edit</a>";
+            
+            $links .="<a href='".WEBSITE.DS.$route_app->controller.DS.$object->id.DS."delete' >Delete</a>";
+
+            // retorna todos os atributos
+			//$array[] = $object->get_attributes();
+
+			// returna apeans os atributos definidos dentro do array.
+            //$array[] = array($object->column1, $object->column2, $links);
+            
+            $array[] = array();
+		}
+
+
+		$array['aaData'] = $array;
+		$array['sEcho'] = intval($_GET['sEcho']);
+		$array['iTotalRecords'] = $Class::get_total_amount();
+		$array['iTotalDisplayRecords'] = $$objects['total'];
+
+		$output = json_encode($array);
+		echo $output;
+	break;
 }
 ?>
