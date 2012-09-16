@@ -1,13 +1,13 @@
 <?php 
 
-$routes = array(
-                "example",
-                "example/foo",
-                "example:id/foo",
-                "example/foo/bar",
-                "example:id/foo/bar",
-                "example:id/foo:id/bar",
-                "example:id/foo:id/bar:id/foobar",
+$route_apps = array(
+                "dashboard",
+                "dashboard/users",
+                "session" => array( "remove" => array( "index", "new", "edit", "alter", "show" )),
+                "modules",
+                "modules/portfolios",
+                "modules/portfolios:id/portfolio_images" ,
+                "modules/employees",
                 );
 
 
@@ -21,7 +21,7 @@ $routes = array(
  *  *** Novas Rotas ***
  * Cada módulo novo deve ser inserido, único e exclusivamente, na variável acima.
  * ex:
- * $routes = array('users','groups');
+ * $route_apps = array('users','groups');
  * 
  *  *** Rotas Aninhadas ***
  * Módulos podem conter relação com outros módulos e por isso precisam passar a sua hierarquiedade na url, ou seja, o seu parentesco.
@@ -55,8 +55,8 @@ $routes = array(
  * Adicionando de modo simples, será criada apenas uma ação simples onde não há a possibilidade de pegar argumentos, por exemplo 
  * (id de algum cadastro).
  * 
- * $routes = array('users'=>array('add'=>'action'));
- * $routes = array('users'=>array('add'=> array('action','another_action')));
+ * $route_apps = array('users'=>array('add'=>'action'));
+ * $route_apps = array('users'=>array('add'=> array('action','another_action')));
  * 
  * Nos exemplos acima, está exibindo os únicos modos suportados, quando se deseja criar uma ou mais ações atráves da key "add".
  * 
@@ -66,7 +66,7 @@ $routes = array(
  * Acoes nao desejadas podem ser removidos para evitar a nao integridade do sistema. Essas acoes nao mapeadas serao ignoradas pelo sistema
  * e será enviado para o usuário a mensagem 404.
  * 
- * $routes = array('users'=>array('remove'=>'new'))
- * $routes = array('users'=>array('remove'=> array('new','create')))
+ * $route_apps = array('users'=>array('remove'=>'new'))
+ * $route_apps = array('users'=>array('remove'=> array('new','create')))
  * 
  */
