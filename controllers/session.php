@@ -3,23 +3,36 @@
 // prevent the direct access
 defined('_PREVENT-DIRECT-ACCESS') or die ("Access restrict");
 
-switch($route_app->view){
+switch( $route_app->view ){
+	
 	case "create":
-		$session->login($params);
+
+		$user = User::authenticate($params);
+
+		if(isset($user->id)){
+			$session->login($user);	
+		}
 		
-		if($session->is_logged());
-			$history->create($_SESSION['permission_level'],$_SESSION['user_id'],$_SESSION['username'],5,6,0);
+		if($session->is_logged()){
+			if(isset($_SESSION['session']['login_error']))
+				unset($_SESSION['session']['login_error']);
+			
+		} else {
+			$_SESSION['session']['login_error'] = "error";
+			flash_warning("Email e senha n&atilde;o conferem com nenhum usu&aacute;rio cadastrado.<br/> Tente novamente.");
+		}
+			
 		redirect_to("");
 		
-		break;
+	break;
 	
 	case "delete":
 	
-		$history->create($_SESSION['permission_level'],$_SESSION['user_id'],$_SESSION['username'],6,6,0);
 		$session->logout();
+		
 		redirect_to("");
 		
-		break;
+	break;
 	
 }
 
