@@ -503,7 +503,7 @@ class DatabaseObject {
 	 * @param array|string $column_name
 	 * @return string
 	 */
-	private function organize_order_by_clause($column_name){
+	private static function organize_order_by_clause($column_name){
 
 		global $database;
 
@@ -544,7 +544,7 @@ class DatabaseObject {
 	 * @param array|string $values
 	 * @return string
 	 */
-	private function organize_where_clause($values){
+	private static function organize_where_clause($values){
 
 		global $database;
 

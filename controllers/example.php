@@ -305,6 +305,7 @@ switch($route_app->view){
 
 			// returna apeans os atributos definidos dentro do array.
             //$array[] = array($object->column1, $object->column2, $links);
+
             
             $array[] = array();
 		}
